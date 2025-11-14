@@ -1,0 +1,67 @@
+---
+ - name: Install pre reqs
+   apt:
+     name: apt-transport-https
+     state: present
+   when: ansible_distribution == "Ubuntu"
+
+ - name: add elastic search gpg key 
+   apt_key:
+     url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+     state: present
+   when: ansible_distribution == "Ubuntu"
+
+ - name: add elastic search repo
+   apt_repository:
+     repo: "deb https://artifacts.elastic.co/packages/8.x/apt stable main"
+     state: present
+   when: ansible_distribution == "Ubuntu"
+
+ - name: Install Elastic Search 
+   package:
+     name: elasticsearch
+     state: present
+   when: ansible_distribution == "Ubuntu"
+
+ - name: Start and enable elastic search 
+   systemd:
+     name: elasticsearch
+     enabled: yes
+     state: started
+   when: ansible_distribution == "Ubuntu"
+
+ - name: Add Elasticsearch Yum Repository
+   yum_repository:
+     name: elasticsearch
+     description: Elasticsearch repository for 8.x packages
+     baseurl: https://artifacts.elastic.co/packages/8.x/yum
+     gpgcheck: yes
+     gpgkey: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+     enabled: yes
+   when: ansible_distribution == "CentOS"
+
+ - name: Install kibana on ubuntu 
+   apt:
+     name: kibana
+     state: present
+   when: ansible_distribution == "Ubuntu"
+
+ - name: Start and enable kibana on ubuntu 
+   service:
+     name: kibana
+     enabled: yes
+     state: started
+   when: ansible_distribution == "Ubuntu"
+
+ - name: Install kibana on centos
+   dnf:
+     name: kibana
+     state: present
+   when: ansible_distribution == "CentOS"
+
+ - name: Start and enable kibana on centos
+   systemd:
+     name: kibana
+     enabled: yes
+     state: started
+   when: ansible_distribution == "CentOS"
